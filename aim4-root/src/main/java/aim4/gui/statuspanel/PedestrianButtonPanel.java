@@ -1,4 +1,5 @@
 package aim4.gui.statuspanel;
+import aim4.config.Debug;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +7,11 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.Viewer;
+import aim4.im.IntersectionManager;
+import aim4.im.v2i.RequestHandler.*;
+import aim4.im.v2i.V2IManager;
+import aim4.im.v2i.policy.BasePolicy;
+import aim4.sim.Simulator;
 
 public class PedestrianButtonPanel extends JPanel implements StatusPanelInterface, ActionListener { 
 	
@@ -20,6 +26,7 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
 	private JButton bottom;
 	private JButton topLeftToBottomRight;
 	private JButton topRightToBottomLeft;
+        private JButton stopAll;
 	
 	public PedestrianButtonPanel(Viewer viewer) {
 		
@@ -29,6 +36,7 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
 		bottom = new JButton("Bottom");
 		topLeftToBottomRight = new JButton("Top Left to Bottom Right");
 		topRightToBottomLeft = new JButton("Top Right to Bottom Left");
+                stopAll = new JButton("All");
 		
 		this.viewer = viewer;
 		
@@ -47,6 +55,7 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
 	        .addComponent(bottom)
 	        .addComponent(topLeftToBottomRight)
 	        .addComponent(topRightToBottomLeft)
+                .addComponent(stopAll)
 	        
 	    );
 
@@ -58,6 +67,7 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
 	        .addComponent(bottom)
 	        .addComponent(topLeftToBottomRight)
 	        .addComponent(topRightToBottomLeft)
+                .addComponent(stopAll)
 	    );
 	    
  
@@ -70,34 +80,58 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
 	    bottom.addActionListener(this);
 	    topLeftToBottomRight.addActionListener(this);
 	    topRightToBottomLeft.addActionListener(this);
+            stopAll.addActionListener(this);
 		
 	}
 		
 	
 	// Event handler
+        @Override
 	public void actionPerformed(ActionEvent e) {
-		
-		if (e.getSource() == left) {
-			
-		}
-		if (e.getSource() == right) {
-			
-		}
-		if (e.getSource() == top) {
-			
-		}
-		if (e.getSource() == bottom) {
-			
-		}
-		if (e.getSource() == topLeftToBottomRight) {
-			
-		}
-		if (e.getSource() == topRightToBottomLeft) {
-			
-		}
-		
+            int imId = Debug.getTargetIMid();
+            if (imId >= 0) {
+              Simulator sim = viewer.getSimulator();
+              IntersectionManager im0 =
+                sim.getMap().getIntersectionManagers().get(imId);
+              assert im0.getId() == imId;
+              if (im0 instanceof V2IManager) {
+                V2IManager im = (V2IManager)im0;
+                if (im.getPolicy() instanceof BasePolicy) {
+                    BasePolicy policy = (BasePolicy)im.getPolicy();
+                    if(policy.getRequestHandler() instanceof PedestrianRequestHandler || policy.getRequestHandler() instanceof AllStopRequestHandler){
+                        
+                        if (e.getSource() == left) {
+                            policy.getPedestrianRequestHandler().setLeft();
+                        }
+                        if (e.getSource() == right) {
+                            policy.getPedestrianRequestHandler().setRight();
+                        }
+                        if (e.getSource() == top) {
+                            policy.getPedestrianRequestHandler().setTop();
+                        }
+                        if (e.getSource() == bottom) {
+                            policy.getPedestrianRequestHandler().setBottom();
+                        }
+                        if (e.getSource() == topLeftToBottomRight) {
+                            policy.getPedestrianRequestHandler().setTopLeftToBottomRight();
+                        }
+                        if (e.getSource() == topRightToBottomLeft) {
+                            policy.getPedestrianRequestHandler().setTopRightToBottomLeft();
+                        }
+                        if (e.getSource() == stopAll) {
+                            if(policy.getRequestHandler() instanceof AllStopRequestHandler){
+                                policy.setRequestHandler(new GoStraightRequestHandler());}
+                            else{
+                                policy.setRequestHandler(new AllStopRequestHandler());
+                            }
+                        }
+                	
 	}
-
+              }
+            }
+        }
+        }
+               
 	public void update() {
 	    // do nothing
 	  }

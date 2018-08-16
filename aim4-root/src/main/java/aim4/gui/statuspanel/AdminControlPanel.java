@@ -45,6 +45,7 @@ import aim4.im.v2i.V2IManager;
 import aim4.im.v2i.RequestHandler.AllStopRequestHandler;
 import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
 import aim4.im.v2i.RequestHandler.GoStraightRequestHandler;
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.sim.Simulator;
 
@@ -65,6 +66,7 @@ public class AdminControlPanel extends JPanel
   private JButton stopButton;
   private JButton straightButton;
   private JButton mixedLightButton;
+  private JButton pedestrianButton;
 
   /** The viewer object */
   Viewer viewer;
@@ -84,6 +86,7 @@ public class AdminControlPanel extends JPanel
     fcfsButton = new JButton("FCFS");
     stopButton = new JButton("Stop");
     straightButton = new JButton("Alternate");
+    pedestrianButton = new JButton("Pedestrian");
 
 
     // layout
@@ -97,6 +100,7 @@ public class AdminControlPanel extends JPanel
         .addComponent(fcfsButton)
         .addComponent(stopButton)
         .addComponent(straightButton)
+        .addComponent(pedestrianButton)
     );
 
     layout.setVerticalGroup(layout
@@ -104,12 +108,14 @@ public class AdminControlPanel extends JPanel
         .addComponent(fcfsButton)
         .addComponent(stopButton)
         .addComponent(straightButton)
+        .addComponent(pedestrianButton)
     );
 
     // add event handler
     fcfsButton.addActionListener(this);
     stopButton.addActionListener(this);
     straightButton.addActionListener(this);
+    pedestrianButton.addActionListener(this);
   }
 
   /////////////////////////////////
@@ -144,7 +150,8 @@ public class AdminControlPanel extends JPanel
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == fcfsButton ||
         e.getSource() == stopButton ||
-        e.getSource() == straightButton) {
+        e.getSource() == straightButton||
+        e.getSource() == pedestrianButton) {
       int imId = Debug.getTargetIMid();
       if (imId >= 0) {
         Simulator sim = viewer.getSimulator();
@@ -161,6 +168,8 @@ public class AdminControlPanel extends JPanel
               policy.setRequestHandler(new AllStopRequestHandler());
             } else if (e.getSource() == straightButton) {
               policy.setRequestHandler(new GoStraightRequestHandler());
+            } else if (e.getSource() == pedestrianButton){
+              policy.setRequestHandler(new PedestrianRequestHandler()); 
             }
           }
         }

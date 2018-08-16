@@ -38,6 +38,7 @@ import java.util.Map;
 
 import aim4.config.Debug;
 import aim4.im.TrackModel;
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.V2IManager;
 import aim4.im.v2i.V2IManagerCallback;
 import aim4.im.v2i.RequestHandler.RequestHandler;
@@ -406,6 +407,10 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    */
   public RequestHandler getRequestHandler() {
     return requestHandler;
+  }
+  
+  public PedestrianRequestHandler getPedestrianRequestHandler(){
+      return (PedestrianRequestHandler)requestHandler;
   }
 
   /**
