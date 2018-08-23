@@ -5,6 +5,9 @@
  */
 package aim4.im.v2i.RequestHandler;
 
+import aim4.config.Constants.CardinalDirection;
+import aim4.config.Constants.TurnDirection;
+import aim4.im.Intersection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,7 +53,17 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean topRightToBottomLeft;
   /** Whether pedestrians are crossing all roads and across the intersection*/
   private boolean stopAll;
-
+  /** A copy of the intersection for this RequestHandler, so can determine turning directions. */
+  private Intersection intersection;
+  
+  /////////////////////////////////
+  // CONSTRUCTOR
+  /////////////////////////////////
+  public PedestrianRequestHandler(Intersection i){
+      intersection = i;
+      left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
+  } 
+  
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////
@@ -83,11 +96,17 @@ public class PedestrianRequestHandler implements RequestHandler{
    * Process the request message.
    *
    * @param msg the request message
-   */
+   *//*
   @Override
   public void processRequestMsg(Request msg) {
     int vin = msg.getVin();
-
+    
+    //If pedestrian crossing over all crossings, reject any request.
+    if (stopAll == true){
+        basePolicy.sendRejectMsg(vin,msg.getRequestId(), Reject.Reason.NO_CLEAR_PATH);
+        return;
+    }
+    
     // If the vehicle has got a reservation already, reject it.
     if (basePolicy.hasReservation(vin)) {
       basePolicy.sendRejectMsg(vin, msg.getRequestId(),
@@ -104,7 +123,7 @@ public class PedestrianRequestHandler implements RequestHandler{
                                msg.getRequestId(),
                                filterResult.getReason());
     }
-
+    
     List<Request.Proposal> proposals = filterResult.getProposals();
 
     // remove proposals that is not in the correct turn direction.
@@ -126,6 +145,147 @@ public class PedestrianRequestHandler implements RequestHandler{
   }
 
   /**
+   * Remove proposals whose arrival time is prohibited from entering
+   * the intersection according to {@code canEnterAtArrivalTime()}.
+   *
+   * @param proposals  a set of proposals
+   *//*
+  private void removeProposalWithIncorrectTurnDirection(
+                                             List<Request.Proposal> proposals) {
+    for (Iterator<Request.Proposal> tpIter = proposals.listIterator();
+         tpIter.hasNext();) {
+      Request.Proposal p = tpIter.next();
+      TurnDirection turnDirection = intersection.calcTurnDirection(p.getArrivalLaneID(), p.getDepartureLaneID());
+      if (topRightToBottomLeft || topLeftToBottomRight) {
+        
+        if (turnDirection.equals(turnDirection.STRAIGHT)) {
+          tpIter.remove();
+        }
+        
+        
+      } else {
+        if (p.getArrivalLaneID() != p.getDepartureLaneID()) {
+          //tpIter.remove();
+        }
+      }
+    }
+  } 
+  
+  /**
+   * Process the request message.
+   *
+   * @param msg the request message
+   */
+  @Override
+  public void processRequestMsg(Request msg) {
+    int vin = msg.getVin();
+
+    // If the vehicle has got a reservation already, reject it.
+    if (basePolicy.hasReservation(vin)) {
+      basePolicy.sendRejectMsg(vin,
+                               msg.getRequestId(),
+                               Reject.Reason.CONFIRMED_ANOTHER_REQUEST);
+      return;
+    }
+    //If pedestrian crossing over all crossings, reject any request.
+    if (stopAll == true){
+        basePolicy.sendRejectMsg(vin,msg.getRequestId(), Reject.Reason.NO_CLEAR_PATH);
+        return;
+    }
+    // filter the proposals
+    ProposalFilterResult filterResult =
+      BasePolicy.standardProposalsFilter(msg.getProposals(),
+                                         basePolicy.getCurrentTime());
+    if (filterResult.isNoProposalLeft()) {
+      basePolicy.sendRejectMsg(vin,
+                               msg.getRequestId(),
+                               filterResult.getReason());
+    }
+    
+    List<Request.Proposal> proposals = filterResult.getProposals();
+
+    // remove proposals that is not in the correct turn direction.
+    removeProposalWithIncorrectTurnDirection(proposals);
+    if (proposals.isEmpty()) {
+      basePolicy.sendRejectMsg(vin, msg.getRequestId(),
+                               Reject.Reason.NO_CLEAR_PATH);
+      return;
+    }
+
+    // try to see if reservation is possible for the remaining proposals.
+    ReserveParam reserveParam =
+      basePolicy.findReserveParam(msg, filterResult.getProposals());
+    if (reserveParam != null) {
+      basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+    } else {
+      basePolicy.sendRejectMsg(vin, msg.getRequestId(),
+                               Reject.Reason.NO_CLEAR_PATH);
+    }
+  }
+  
+  private void removeProposalWithIncorrectTurnDirection(
+                                             List<Request.Proposal> proposals) {
+    for (Iterator<Request.Proposal> tpIter = proposals.listIterator();
+         tpIter.hasNext();) {
+      Request.Proposal p = tpIter.next();
+      
+      //Get turn direction and from where it will be turning from.
+      TurnDirection turnDirection = intersection.calcTurnDirection(p.getArrivalLaneID(), p.getDepartureLaneID());
+      CardinalDirection cd = intersection.getLaneCardinalDirection(p.getArrivalLaneID());
+      
+      //No vehicles can go straight when there are people crossing diagonally across the intersection.
+      if((topRightToBottomLeft||topLeftToBottomRight)&&turnDirection==TurnDirection.STRAIGHT){
+          tpIter.remove();
+          break;
+      }
+      
+      if(topRightToBottomLeft){
+          //North and South can't turn left
+          if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.NORTH)&&turnDirection==TurnDirection.LEFT){
+            tpIter.remove();
+            break;
+          }//East and West can't turn right
+          if((cd==CardinalDirection.EAST||cd==CardinalDirection.WEST)&&turnDirection==TurnDirection.RIGHT){
+            tpIter.remove();
+            break;  
+          }//N and W can't turn if people crossing on top or left
+          if((cd==CardinalDirection.NORTH||cd==CardinalDirection.WEST)&&(top||left)){
+            tpIter.remove();
+            break;   
+          }//S and E can't turn if people crossing on bottom or right
+          if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.EAST)&&(right||bottom)){
+            tpIter.remove();
+            break;   
+          }
+      }
+      if(topLeftToBottomRight){
+          //S and N can't turn right
+          if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.NORTH)&&turnDirection==TurnDirection.RIGHT){
+            tpIter.remove();
+            break;
+          }//E and W can't turn left
+          if((cd==CardinalDirection.EAST||cd==CardinalDirection.WEST)&&turnDirection==TurnDirection.LEFT){
+            tpIter.remove();
+            break;  
+          }//N and E can't turn if people crossing on top or right
+          if((cd==CardinalDirection.NORTH||cd==CardinalDirection.EAST)&&(top||right)){
+            tpIter.remove();
+            break;   
+          }//S and W can't turn if people crossing on bottom or right
+          if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.WEST)&&(left||bottom)){
+            tpIter.remove();
+            break;   
+          }
+      }
+      
+      //No one is crossing diagonally accross now...
+      
+      
+    }
+  }
+      
+
+  /**
    * Get the statistic collector.
    *
    * @return the statistic collector
@@ -134,74 +294,51 @@ public class PedestrianRequestHandler implements RequestHandler{
   public StatCollector<?> getStatCollector() {
     return null;
   }
-
-  /**
-   * Remove proposals whose arrival time is prohibited from entering
-   * the intersection according to {@code canEnterAtArrivalTime()}.
-   *
-   * @param proposals  a set of proposals
-   */
-  private void removeProposalWithIncorrectTurnDirection(
-                                             List<Request.Proposal> proposals) {
-    for (Iterator<Request.Proposal> tpIter = proposals.listIterator();
-         tpIter.hasNext();) {
-      Request.Proposal p = tpIter.next();
-      if (topRightToBottomLeft ||topLeftToBottomRight) {
-        if (p.getArrivalLaneID() == p.getDepartureLaneID()) {
-          tpIter.remove();
-        }
-      } else {
-        if (p.getArrivalLaneID() != p.getDepartureLaneID()) {
-          //tpIter.remove();
-        }
-      }
-    }
-  }
   
   public void setLeft(){
-      if(left=true)
+      if(left==true)
         left=false;
       else
         left=true;
   }
   
   public void setRight(){
-      if(right=true)
+      if(right==true)
         right=false;
       else
         right=true;
   }
   
   public void setTop(){
-      if(top=true)
+      if(top==true)
         top=false;
       else
         top=true;
   }
   
   public void setBottom(){
-      if(bottom=true)
+      if(bottom==true)
         bottom=false;
       else
         bottom=true;
   }
   
   public void setTopLeftToBottomRight(){
-      if(topLeftToBottomRight=true)
+      if(topLeftToBottomRight==true)
         topLeftToBottomRight=false;
       else
         topLeftToBottomRight=true;
   }
   
   public void setTopRightToBottomLeft(){
-      if(topRightToBottomLeft=true)
+      if(topRightToBottomLeft==true)
         topRightToBottomLeft=false;
       else
         topRightToBottomLeft=true;
   }
   
   public void setStopAll(){
-      if(stopAll=true)
+      if(stopAll==true)
         stopAll=false;
       else
         stopAll=true;

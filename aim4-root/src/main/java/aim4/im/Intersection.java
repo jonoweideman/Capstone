@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im;
 
+import aim4.config.Constants.CardinalDirection;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -189,5 +190,21 @@ public interface Intersection {
    * @return the turn direction of the vehicle at the next intersection
    */
   TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane);
-
+  
+  /**
+   * Get the turn direction of the vehicle at the next intersection.
+   *
+   * @param arrivalLaneID    the current lane ID.
+   * @param departureLaneID  the departure lane ID.
+   * @return the turn direction of the vehicle at the next intersection
+   */
+  TurnDirection calcTurnDirection(int arrivalLaneID, int departureLaneID);
+  
+  /**
+   * Get the cardinal direction of the road this lane is a part of.
+   *
+   * @param laneID  the lane ID.
+   * @return the CardinalDirection of the Road which contains this lane
+   */
+  CardinalDirection getLaneCardinalDirection(int laneID);
 }

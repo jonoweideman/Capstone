@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im;
 
+import aim4.config.Constants.CardinalDirection;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -676,5 +677,49 @@ public class RoadBasedIntersection implements Intersection {
       }
     }
   }
-
+  
+  /**
+   * Get the turn direction of the vehicle at the next intersection.
+   *
+   * @param arrivalLaneID    the current lane ID.
+   * @param departureLaneID  the departure lane ID.
+   * @return the turn direction of the vehicle at the next intersection
+   */
+  @Override
+  public TurnDirection calcTurnDirection(int arrivalLaneID, int departureLaneID){
+      for(Lane lane1 : lanes){
+          if(lane1.getId()==arrivalLaneID)
+              for(Lane lane2: lanes){
+                  if(lane2.getId()==departureLaneID)
+                      return this.calcTurnDirection(lane1,lane2);
+              }
+          
+      }
+      
+      return null;
+  }
+  
+  @Override
+  public CardinalDirection getLaneCardinalDirection(int laneID){
+      for(Road road : roads){
+          List<Lane>  containedLanes = road.getLanes();
+          for(Lane lane : containedLanes){
+              if(lane.getId()==laneID){ 
+                //Found the road, now get it's CardinalDirection from it's name
+                  String name = road.getName();
+                  switch (name.charAt(name.length()-1)){
+                      case 'N':
+                         return CardinalDirection.NORTH;
+                      case 'S':
+                         return CardinalDirection.SOUTH;
+                      case 'E':
+                         return CardinalDirection.EAST;
+                      case 'W':
+                         return CardinalDirection.WEST;
+                  }
+              }
+          }
+      }
+      return null;
+  }
 }

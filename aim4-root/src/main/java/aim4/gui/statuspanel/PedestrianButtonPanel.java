@@ -1,4 +1,4 @@
-package aim4.gui.statuspanel;
+ package aim4.gui.statuspanel;
 import aim4.config.Debug;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -119,11 +119,7 @@ public class PedestrianButtonPanel extends JPanel implements StatusPanelInterfac
                             policy.getPedestrianRequestHandler().setTopRightToBottomLeft();
                         }
                         if (e.getSource() == stopAll) {
-                            if(policy.getRequestHandler() instanceof AllStopRequestHandler){
-                                policy.setRequestHandler(new GoStraightRequestHandler());}
-                            else{
-                                policy.setRequestHandler(new AllStopRequestHandler());
-                            }
+                            policy.getPedestrianRequestHandler().setStopAll();
                         }
                 	
 	}
