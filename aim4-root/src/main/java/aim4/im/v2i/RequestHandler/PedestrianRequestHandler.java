@@ -240,7 +240,7 @@ public class PedestrianRequestHandler implements RequestHandler{
       }
       
       if(topRightToBottomLeft){
-          //North and South can't turn left
+          //North and South
           if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.NORTH)&&turnDirection==TurnDirection.LEFT){
             tpIter.remove();
             break;
@@ -256,6 +256,11 @@ public class PedestrianRequestHandler implements RequestHandler{
           if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.EAST)&&(right||bottom)){
             tpIter.remove();
             break;   
+          }//If comming from Wor E, only closest lane can turn.
+          if(cd==CardinalDirection.WEST||cd==CardinalDirection.EAST){
+            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor());
+                tpIter.remove();
+                break;
           }
       }
       if(topLeftToBottomRight){
@@ -275,6 +280,11 @@ public class PedestrianRequestHandler implements RequestHandler{
           if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.WEST)&&(left||bottom)){
             tpIter.remove();
             break;   
+          }//If comming from N or S, only closest lane can turn.
+          if(cd==CardinalDirection.NORTH||cd==CardinalDirection.SOUTH){
+            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor());
+                tpIter.remove();
+                break;
           }
       }
       

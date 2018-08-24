@@ -896,6 +896,11 @@ public class V2ICoordinator implements Coordinator {
    * Whether or not this vehicle is being targeted for debugging purpose
    */
   private boolean isDebugging;
+  
+  /**
+   * Store the next turning direction for analysis and testing purposes.
+   */
+  private String turnDirection;
 
 
   /////////////////////////////////
@@ -939,6 +944,21 @@ public class V2ICoordinator implements Coordinator {
 
     // Set the intial state
     setState(State.V2I_PLANNING);
+    
+    if(null!=lcController.getTurnDirection(navigator)){
+            switch (lcController.getTurnDirection(navigator)) {
+          case LEFT:
+              turnDirection = "RIGHT";
+              break;
+          case RIGHT:
+              turnDirection = "LEFT";
+              break;
+          case STRAIGHT:
+              turnDirection = "STRAIGHT";
+              break;
+          default:
+              break;
+      }}
   }
 
 
@@ -2081,6 +2101,25 @@ public class V2ICoordinator implements Coordinator {
     } else {  // already inside the acceleration zone or the intersection
       return null;
     }
+  }
+  
+  public String getTurnDirection(){
+      try{
+        //Have no clue why left and right are swapped here. Implemented in previous AIM4...
+        if(lcController.getTurnDirection(navigator)==TurnDirection.LEFT){
+            turnDirection = "RIGHT";
+            return "RIGHT";
+        }else if(lcController.getTurnDirection(navigator)==TurnDirection.RIGHT){
+            turnDirection = "LEFT";
+            return "LEFT";
+        }else if(lcController.getTurnDirection(navigator)==TurnDirection.STRAIGHT){
+            turnDirection = "STRAIGHT";
+            return "STRAIGHT";
+        }else
+            return "Busy turning" + turnDirection;
+      }catch(Exception e){
+          return "On it's way to the exit";
+      }
   }
 
 }

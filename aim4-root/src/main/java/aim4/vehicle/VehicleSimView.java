@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle;
 
+import aim4.config.Constants.TurnDirection;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -200,5 +201,11 @@ public interface VehicleSimView extends VehicleDriverView, Runnable{
    * @param timeStep the size of the time step to simulate, in seconds
    */
   void move(double timeStep);
-
+  
+  /**
+   * Get the turn direction of the vehicle
+   * 
+   * @return the turn direction of the vehicle
+   */
+  String getTurnDirection();
 }

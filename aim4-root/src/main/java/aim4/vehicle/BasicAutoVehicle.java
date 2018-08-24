@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle;
 
+import aim4.config.Constants.TurnDirection;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -538,6 +539,11 @@ public class BasicAutoVehicle extends BasicVehicle
   @Override
   public V2IMessage getLastV2IMessage() {
     return lastV2IMessage;
+  }
+  
+  @Override
+  public String getTurnDirection(){
+      return driver.getTurnDirection();
   }
 
 }

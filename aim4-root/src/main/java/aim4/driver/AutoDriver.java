@@ -292,5 +292,15 @@ public class AutoDriver extends Driver
     memoDistanceToNextIntersection = null;
     memoDistanceFromPrevIntersection = null;
   }
+  
+  public String getTurnDirection(){
+      if(coordinator instanceof V2ICoordinator){//then it's onit's way to intersection
+          V2ICoordinator v2icoordinator = (V2ICoordinator)coordinator;
+          return v2icoordinator.getTurnDirection();
+      }else{
+          return "Already turned.";
+
+      }
+  }
 
 }

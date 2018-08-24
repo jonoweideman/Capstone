@@ -1755,4 +1755,9 @@ public abstract class BasicVehicle implements VehicleSimView, Runnable {
   public void printState() {
     System.err.printf("State of vin %d: %s\n", vin, movement.toString());
   }
+  
+  @Override
+  public String getTurnDirection(){
+      return "HELLO";
+  }
 }

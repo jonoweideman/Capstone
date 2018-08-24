@@ -722,4 +722,17 @@ public class RoadBasedIntersection implements Intersection {
       }
       return null;
   }
+  
+  @Override
+  public Lane getLane(int laneID){
+      for(Road road : roads){
+          List<Lane>  containedLanes = road.getLanes();
+          for(Lane lane : containedLanes){
+              if(lane.getId()==laneID){
+                  return lane;
+              }
+          }
+      }
+      return null;
+  }
 }

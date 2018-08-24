@@ -207,4 +207,12 @@ public interface Intersection {
    * @return the CardinalDirection of the Road which contains this lane
    */
   CardinalDirection getLaneCardinalDirection(int laneID);
+  
+  /**
+   * Get the Lane with the matching lane ID.
+   *
+   * @param laneID  the lane ID.
+   * @return the Lane with the matching lane ID
+   */
+  Lane getLane(int laneID);
 }
