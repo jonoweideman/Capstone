@@ -280,6 +280,82 @@ public class PedestrianRequestHandler implements RequestHandler{
       
       //No one is crossing diagonally accross now...
       
+      if(top){
+          //Reject all coming form the North
+          if(cd==CardinalDirection.NORTH){
+            tpIter.remove();
+            break; 
+          }//Handle people coming from W
+          if(cd==CardinalDirection.WEST&&(left==true||turnDirection==TurnDirection.LEFT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from E
+          if(cd==CardinalDirection.EAST&&(right==true||turnDirection==TurnDirection.RIGHT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from S
+          if(cd==CardinalDirection.SOUTH&&(bottom==true||turnDirection==TurnDirection.STRAIGHT)){
+            tpIter.remove();
+            break;   
+          }
+      }
+      if(right){
+          //Reject all coming form the EAST
+          if(cd==CardinalDirection.EAST){
+            tpIter.remove();
+            break; 
+          }//Handle people coming from W
+          if(cd==CardinalDirection.WEST&&(left==true||turnDirection==TurnDirection.STRAIGHT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from N
+          if(cd==CardinalDirection.NORTH&&(top==true||turnDirection==TurnDirection.LEFT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from S
+          if(cd==CardinalDirection.SOUTH&&(bottom==true||turnDirection==TurnDirection.RIGHT)){
+            tpIter.remove();
+            break;   
+          }
+      }
+      if(bottom){
+          //Reject all coming form the SOUTH
+          if(cd==CardinalDirection.SOUTH){
+            tpIter.remove();
+            break; 
+          }//Handle people coming from W
+          if(cd==CardinalDirection.WEST&&(left==true||turnDirection==TurnDirection.RIGHT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from E
+          if(cd==CardinalDirection.EAST&&(right==true||turnDirection==TurnDirection.LEFT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from N
+          if(cd==CardinalDirection.NORTH&&(top==true||turnDirection==TurnDirection.STRAIGHT)){
+            tpIter.remove();
+            break;   
+          }
+      }
+      if(left){
+          //Reject all coming form the W
+          if(cd==CardinalDirection.WEST){
+            tpIter.remove();
+            break; 
+          }//Handle people coming from N
+          if(cd==CardinalDirection.NORTH&&(top==true||turnDirection==TurnDirection.RIGHT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from E
+          if(cd==CardinalDirection.EAST&&(right==true||turnDirection==TurnDirection.STRAIGHT)){
+            tpIter.remove();
+            break;   
+          }//Handle people coming from S
+          if(cd==CardinalDirection.SOUTH&&(bottom==true||turnDirection==TurnDirection.LEFT)){
+            tpIter.remove();
+            break;   
+          }
+      }
       
     }
   }
