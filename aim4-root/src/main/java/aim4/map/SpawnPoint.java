@@ -116,7 +116,6 @@ public class SpawnPoint {
     List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep);
   }
 
-
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////

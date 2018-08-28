@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package aim4.im.v2i.RequestHandler;
 
 import aim4.config.Constants.CardinalDirection;
@@ -19,12 +14,9 @@ import aim4.msg.i2v.Reject;
 import aim4.msg.v2i.Request;
 import aim4.sim.StatCollector;
 
-/**
- *
- * @author Philip
- */
+
 public class PedestrianRequestHandler implements RequestHandler{
-    /////////////////////////////////
+  /////////////////////////////////
   // CONSTANTS
   /////////////////////////////////
 

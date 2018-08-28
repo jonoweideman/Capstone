@@ -56,7 +56,6 @@ import aim4.map.track.WayPoint;
 import aim4.util.GeomMath;
 import aim4.util.Util;
 
-
 /**
  * An intersection that is defined by the intersection of a set of roads.
  */
@@ -200,9 +199,10 @@ public class RoadBasedIntersection implements Intersection {
 
     calcEntryRoads();
     calcExitRoads();
+    
   }
 
-  /////////////////////////////////
+  ///s//////////////////////////////
   // PRIVATE METHODS
   /////////////////////////////////
 
@@ -735,4 +735,31 @@ public class RoadBasedIntersection implements Intersection {
       }
       return null;
   }
+  
+  /** METHODS FOR PEDESTRIAN CROSSING**/
+  
+  // Return number of roads entering intersection
+  public int getNumberOfEntryRoads() {
+	  return entryRoads.size() ;
+  }
+  
+  // Return number of roads exiting intersection
+  public int getNumberOfExitRoads() {
+	  return exitRoads.size();
+  }
+  
+  // Return number of cross walks
+  // The cross walks are the diagonals of the intersection (a polygon)
+  // Therefore there are n(n-1)/2 cross walks
+  // Where n is the number of incoming roads
+  // n = max { number of entry roads ; number of exit roads } to account for situation
+  // when there is an unequal amount of entry and exit roads
+ 
+  public int getNumberOfCrossWalks() {
+	  // Could have a different number of entry and exit roads
+	  // Number of cross walks is max{number of entry roads, number of exit roads}
+	  int n = Math.max(this.getNumberOfEntryRoads(), this.getNumberOfExitRoads());
+	  return n*(n-1)/2;
+  }
+  
 }
