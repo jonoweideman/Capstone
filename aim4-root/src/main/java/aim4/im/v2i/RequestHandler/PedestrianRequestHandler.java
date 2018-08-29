@@ -221,6 +221,14 @@ public class PedestrianRequestHandler implements RequestHandler{
          tpIter.hasNext();) {
       Request.Proposal p = tpIter.next();
       
+      /*int arrivalLaneID = p.getArrivalLaneID(); //for debugging
+      int departureLaneId = p.getDepartureLaneID();
+      boolean lef = intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor();
+      boolean rig = intersection.getLane(p.getArrivalLaneID()).hasRightNeighbor();
+      
+      boolean lefD = intersection.getLane(p.getDepartureLaneID()).hasLeftNeighbor();
+      boolean rigD = intersection.getLane(p.getDepartureLaneID()).hasRightNeighbor();*/
+      
       //Get turn direction and from where it will be turning from.
       TurnDirection turnDirection = intersection.calcTurnDirection(p.getArrivalLaneID(), p.getDepartureLaneID());
       CardinalDirection cd = intersection.getLaneCardinalDirection(p.getArrivalLaneID());
@@ -248,11 +256,12 @@ public class PedestrianRequestHandler implements RequestHandler{
           if((cd==CardinalDirection.SOUTH||cd==CardinalDirection.EAST)&&(right||bottom)){
             tpIter.remove();
             break;   
-          }//If comming from Wor E, only closest lane can turn.
+          }//If comming from W or E, only closest lane can turn.
           if(cd==CardinalDirection.WEST||cd==CardinalDirection.EAST){
-            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor());
+            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor()){
                 tpIter.remove();
                 break;
+            }
           }
       }
       if(topLeftToBottomRight){
@@ -274,9 +283,10 @@ public class PedestrianRequestHandler implements RequestHandler{
             break;   
           }//If comming from N or S, only closest lane can turn.
           if(cd==CardinalDirection.NORTH||cd==CardinalDirection.SOUTH){
-            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor());
+            if(intersection.getLane(p.getArrivalLaneID()).hasLeftNeighbor()){
                 tpIter.remove();
                 break;
+            }
           }
       }
       

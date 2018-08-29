@@ -691,7 +691,7 @@ public class RoadBasedIntersection implements Intersection {
           if(lane1.getId()==arrivalLaneID)
               for(Lane lane2: lanes){
                   if(lane2.getId()==departureLaneID)
-                      return this.calcTurnDirection(lane1,lane2);
+                      return this.calcTurnDirection(lane2,lane1);
               }
           
       }
@@ -709,13 +709,13 @@ public class RoadBasedIntersection implements Intersection {
                   String name = road.getName();
                   switch (name.charAt(name.length()-1)){
                       case 'N':
-                         return CardinalDirection.NORTH;
-                      case 'S':
                          return CardinalDirection.SOUTH;
+                      case 'S':
+                         return CardinalDirection.NORTH;
                       case 'E':
-                         return CardinalDirection.EAST;
-                      case 'W':
                          return CardinalDirection.WEST;
+                      case 'W':
+                         return CardinalDirection.EAST;
                   }
               }
           }

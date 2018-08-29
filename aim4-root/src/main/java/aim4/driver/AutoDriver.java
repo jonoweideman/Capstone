@@ -298,8 +298,7 @@ public class AutoDriver extends Driver
           V2ICoordinator v2icoordinator = (V2ICoordinator)coordinator;
           return v2icoordinator.getTurnDirection();
       }else{
-          return "Already turned.";
-
+          return "Unable to determine next turn direction.";
       }
   }
 
