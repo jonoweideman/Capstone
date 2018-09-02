@@ -462,5 +462,9 @@ public class LineSegmentLane extends AbstractLane {
     result.closePath();
     return result;
   }
+ 
+  public int compareTo(Lane l) {
+	  return l.getId() - this.getId();
+  }
 
 }

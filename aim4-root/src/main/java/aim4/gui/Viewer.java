@@ -1103,7 +1103,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   }
 
   // //////////////////////////////////////////////////
-  // Basic fucntions for GUI updates
+  // Basic functions for GUI updates
   // //////////////////////////////////////////////////
 
   /**

@@ -14,7 +14,6 @@ import aim4.msg.i2v.Reject;
 import aim4.msg.v2i.Request;
 import aim4.sim.StatCollector;
 
-
 public class PedestrianRequestHandler implements RequestHandler{
   /////////////////////////////////
   // CONSTANTS
@@ -383,6 +382,8 @@ public class PedestrianRequestHandler implements RequestHandler{
     return null;
   }
   
+  // BOOLEAN SETTERS //
+  
   public void setLeft(){
       if(left==true)
         left=false;
@@ -430,6 +431,37 @@ public class PedestrianRequestHandler implements RequestHandler{
         stopAll=false;
       else
         stopAll=true;
+  }
+  
+  
+  // BOOLEAN GETTERS //
+  
+  public boolean getLeft() {
+	  return left;
+  }
+  
+  public boolean getRight() {
+	  return right;
+  }
+  
+  public boolean getTop() {
+	  return top;
+  }
+  
+  public boolean getBottom() {
+	  return bottom;
+  }
+  
+  public boolean getTopLeftToBottomRight() {
+	  return topLeftToBottomRight;
+  }
+  
+  public boolean getTopRightToBottomLeft() {
+	  return topRightToBottomLeft;
+  }
+  
+  public boolean getStopAll() {
+	  return stopAll;
   }
 
 }

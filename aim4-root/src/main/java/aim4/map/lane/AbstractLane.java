@@ -385,6 +385,9 @@ public abstract class AbstractLane implements Lane {
    */
   @Override
   public abstract Point2D rightIntersectionPoint(Line2D l);
-
-
+  
+  // CompareTo method to order an array of lanes based on LaneIDs
+  public int compareTo(Lane l) {
+	  return l.getId() - this.getId();
+  }
 }

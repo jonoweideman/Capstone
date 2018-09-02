@@ -8,6 +8,7 @@ public class PedestrianSpawnPoint {
 	private Point2D location;
 	// Destination of this spawning point
 	private PedestrianSpawnPoint destinationSpawnPoint;
+	private String crosswalk;
 	
 	public PedestrianSpawnPoint(Point2D location, PedestrianSpawnPoint destinationSpawnPoint) {
 		this.location = location;

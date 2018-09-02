@@ -40,7 +40,7 @@ import java.awt.Shape;
  * generation methods, and other things that are the same no matter
  * the implementation of the Lane.
  */
-public interface Lane {
+public interface Lane extends Comparable<Lane>{
 
   /////////////////////////////////
   // PUBLIC METHODS
@@ -419,6 +419,7 @@ public interface Lane {
    *          this Lane, or <code>null</code> if it doesn't intersect
    */
   Point2D rightIntersectionPoint(Line2D l);
-
+  
+  int compareTo(Lane l);
 
 }
