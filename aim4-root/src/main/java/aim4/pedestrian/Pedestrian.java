@@ -29,5 +29,7 @@ public class Pedestrian {
 		
 		// put in constructor?
 	//}
+        
+        
 	
 }

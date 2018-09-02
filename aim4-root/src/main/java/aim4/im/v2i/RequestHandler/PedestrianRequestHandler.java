@@ -3,6 +3,7 @@ package aim4.im.v2i.RequestHandler;
 import aim4.config.Constants.CardinalDirection;
 import aim4.config.Constants.TurnDirection;
 import aim4.im.Intersection;
+import aim4.im.IntersectionManager;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,12 +48,15 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean stopAll;
   /** A copy of the intersection for this RequestHandler, so can determine turning directions. */
   private Intersection intersection;
+  /** A copy of the intersection manager for this RequestHandler, so can communicate with vehicles. */
+  private IntersectionManager im;
   
   /////////////////////////////////
   // CONSTRUCTOR
   /////////////////////////////////
-  public PedestrianRequestHandler(Intersection i){
+  public PedestrianRequestHandler(Intersection i,IntersectionManager im){
       intersection = i;
+      this.im = im;
       left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
   } 
   
@@ -371,7 +375,10 @@ public class PedestrianRequestHandler implements RequestHandler{
       
     }
   }
+     
+  void sendRejects(){
       
+  }
 
   /**
    * Get the statistic collector.
@@ -386,15 +393,19 @@ public class PedestrianRequestHandler implements RequestHandler{
   public void setLeft(){
       if(left==true)
         left=false;
-      else
+      else{
         left=true;
+        sendRejects();
+      }
   }
   
   public void setRight(){
       if(right==true)
         right=false;
-      else
+      else{
+        sendRejects();
         right=true;
+      }
   }
   
   public void setTop(){

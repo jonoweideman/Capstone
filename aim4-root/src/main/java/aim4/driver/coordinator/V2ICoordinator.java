@@ -1206,6 +1206,10 @@ public class V2ICoordinator implements Coordinator {
       processRejectMessageForAwaitingResponseState(msg);
       break;
     default:
+      /*if(msg.getReason().equals(TRY_SLOW_DOWN)){
+          processRejectMessageForTrySlowDown(msg));
+          break;
+      }*/
       System.err.printf("vin %d receives a reject message when it is not " +
                         "at the V2I_AWAITING_RESPONSE state\n",
                         vehicle.getVIN());

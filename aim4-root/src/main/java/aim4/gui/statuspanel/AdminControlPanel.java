@@ -169,7 +169,7 @@ public class AdminControlPanel extends JPanel
             } else if (e.getSource() == straightButton) {
               policy.setRequestHandler(new GoStraightRequestHandler());
             } else if (e.getSource() == pedestrianButton){
-              policy.setRequestHandler(new PedestrianRequestHandler(im0.getIntersection())); 
+              policy.setRequestHandler(new PedestrianRequestHandler(im0.getIntersection(),im0)); 
             }
           }
         }
