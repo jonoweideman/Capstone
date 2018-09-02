@@ -279,5 +279,4 @@ public interface AutoVehicleDriverView extends VehicleDriverView {
    */
   V2IMessage getLastV2IMessage();
 
-
 }

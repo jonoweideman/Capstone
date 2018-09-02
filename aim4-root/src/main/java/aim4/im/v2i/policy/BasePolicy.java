@@ -717,5 +717,13 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
     return im.getTrackModel();
   }
 
+  @Override
+  public void removeTracking(int vin){
+      if(requestHandler instanceof PedestrianRequestHandler){
+          PedestrianRequestHandler p =(PedestrianRequestHandler)requestHandler;
+          p.removeTracking(vin);
+      }
+      
+  }
 
 }

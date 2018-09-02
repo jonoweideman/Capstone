@@ -69,4 +69,10 @@ public interface Policy {
    */
   StatCollector<?> getStatCollector();
 
+  /**
+   * Remove tracking of vehicle with this VIN.
+   * 
+   * @param vin the VIN of the vehicle
+   */
+  void removeTracking(int vin);
 }

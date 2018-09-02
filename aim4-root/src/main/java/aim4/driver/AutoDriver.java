@@ -36,6 +36,8 @@ import aim4.driver.coordinator.NoIntersectionCoordinator;
 import aim4.driver.coordinator.V2ICoordinator;
 import aim4.driver.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
+import aim4.im.v2i.V2IManager;
+import aim4.im.v2i.policy.*;
 import aim4.map.BasicMap;
 import aim4.vehicle.AutoVehicleDriverView;
 import aim4.sim.AutoDriverOnlySimulator;
@@ -302,4 +304,12 @@ public class AutoDriver extends Driver
       }
   }
 
+  public void notifyIM(int vin){
+      if(currentIM instanceof V2IManager){
+          V2IManager im = (V2IManager)currentIM;
+          Policy pol = im.getPolicy();
+          pol.removeTracking(vin);
+      }
+  }
 }
+

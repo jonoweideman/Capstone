@@ -1202,14 +1202,16 @@ public class V2ICoordinator implements Coordinator {
    */
   private void processRejectMessage(Reject msg) {
     switch(state) {
+    case V2I_MAINTAINING_RESERVATION:
+      if(msg.getReason().equals(Reject.Reason.NO_CLEAR_PATH)){
+          processRejectMessageForAwaitingResponseState(msg);
+          break;
+      }
     case V2I_AWAITING_RESPONSE:
       processRejectMessageForAwaitingResponseState(msg);
       break;
     default:
-      /*if(msg.getReason().equals(TRY_SLOW_DOWN)){
-          processRejectMessageForTrySlowDown(msg));
-          break;
-      }*/
+      
       System.err.printf("vin %d receives a reject message when it is not " +
                         "at the V2I_AWAITING_RESPONSE state\n",
                         vehicle.getVIN());
@@ -1828,6 +1830,9 @@ public class V2ICoordinator implements Coordinator {
                               vehicle.gaugeTime(), vehicle.getVIN());
           }
           setState(State.V2I_TRAVERSING);
+          //Now must let IM know it no longer has to worry about me.
+          pilot.notifyIM(vehicle.getVIN());
+          
           return true;  // move immediately
         }
       } else {

@@ -339,4 +339,7 @@ public class V2IPilot extends BasicPilot {
                       SimConfig.TIME_STEP);
   }
 
+  public void notifyIM(int vin){
+      driver.notifyIM(vin);
+  }
 }

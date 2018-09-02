@@ -14,6 +14,7 @@ import aim4.im.v2i.policy.BasePolicy.ReserveParam;
 import aim4.msg.i2v.Reject;
 import aim4.msg.v2i.Request;
 import aim4.sim.StatCollector;
+import java.util.ArrayList;
 
 public class PedestrianRequestHandler implements RequestHandler{
   /////////////////////////////////
@@ -50,6 +51,8 @@ public class PedestrianRequestHandler implements RequestHandler{
   /** A copy of the intersection manager for this RequestHandler, so can communicate with vehicles. */
   private IntersectionManager im;
   
+  private ArrayList<Integer> tracking;
+  
   /////////////////////////////////
   // CONSTRUCTOR
   /////////////////////////////////
@@ -57,6 +60,7 @@ public class PedestrianRequestHandler implements RequestHandler{
       intersection = i;
       this.im = im;
       left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
+      tracking=new ArrayList<Integer>();
   } 
   
   /////////////////////////////////
@@ -174,7 +178,10 @@ public class PedestrianRequestHandler implements RequestHandler{
   @Override
   public void processRequestMsg(Request msg) {
     int vin = msg.getVin();
-
+    
+    if(!tracking.contains((Integer)vin))
+        tracking.add((Integer)vin);
+    
     // If the vehicle has got a reservation already, reject it.
     if (basePolicy.hasReservation(vin)) {
       basePolicy.sendRejectMsg(vin,
@@ -375,8 +382,18 @@ public class PedestrianRequestHandler implements RequestHandler{
     }
   }
      
-  void sendRejects(){
-      
+  private void sendRejects(){
+      for(Integer v : tracking){
+          try{
+          basePolicy.sendRejectMsg(v,0, Reject.Reason.NO_CLEAR_PATH);
+          }catch(Exception e){
+              //Vehicle couln't slow down
+          }
+      }
+  }
+  
+  public void removeTracking(int vin){
+      tracking.remove((Integer)vin);
   }
 
   /**
@@ -404,44 +421,54 @@ public class PedestrianRequestHandler implements RequestHandler{
       if(right==true)
         right=false;
       else{
-        sendRejects();
         right=true;
+        sendRejects();
       }
   }
   
   public void setTop(){
       if(top==true)
         top=false;
-      else
+      else{
         top=true;
+        sendRejects();
+      }
   }
   
   public void setBottom(){
       if(bottom==true)
         bottom=false;
-      else
+      else{
         bottom=true;
+        sendRejects();
+      }
   }
   
   public void setTopLeftToBottomRight(){
       if(topLeftToBottomRight==true)
         topLeftToBottomRight=false;
-      else
+      else{
         topLeftToBottomRight=true;
+        sendRejects();
+      }
   }
   
   public void setTopRightToBottomLeft(){
       if(topRightToBottomLeft==true)
         topRightToBottomLeft=false;
-      else
+      else{
         topRightToBottomLeft=true;
+        sendRejects();
+      }
   }
   
   public void setStopAll(){
       if(stopAll==true)
         stopAll=false;
-      else
+      else{
         stopAll=true;
+        sendRejects();
+      }
   }
   
   

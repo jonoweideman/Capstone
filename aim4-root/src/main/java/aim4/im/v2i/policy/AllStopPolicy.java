@@ -113,5 +113,9 @@ public class AllStopPolicy implements Policy {
     return null;
   }
 
+  @Override
+  public void removeTracking(int vin){
+      
+  }
 
 }
