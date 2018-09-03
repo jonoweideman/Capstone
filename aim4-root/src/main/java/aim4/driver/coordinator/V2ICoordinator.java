@@ -1201,17 +1201,18 @@ public class V2ICoordinator implements Coordinator {
    * @param msg the Reject message to process
    */
   private void processRejectMessage(Reject msg) {
-    switch(state) {
-    case V2I_MAINTAINING_RESERVATION:
-      if(msg.getReason().equals(Reject.Reason.NO_CLEAR_PATH)){
-          processRejectMessageForAwaitingResponseState(msg);
-          break;
+    if(msg.getReason().equals(Reject.Reason.TRY_TO_SLOW_DOWN)){
+        if(state.equals(State.V2I_MAINTAINING_RESERVATION)){
+            processRejectMessageForAwaitingResponseState(msg);
+            return;
+        }
+        return;
       }
+    switch(state) {
     case V2I_AWAITING_RESPONSE:
       processRejectMessageForAwaitingResponseState(msg);
       break;
     default:
-      
       System.err.printf("vin %d receives a reject message when it is not " +
                         "at the V2I_AWAITING_RESPONSE state\n",
                         vehicle.getVIN());
@@ -1249,6 +1250,9 @@ public class V2ICoordinator implements Coordinator {
       // preparation in coordinator.
       throw new RuntimeException("V2ICoordinator: Arrival time of request " +
                                  "has already passed.");
+    case TRY_TO_SLOW_DOWN:
+        goBackToPlanningStateUponRejection(msg);
+        break;
     default:
       System.err.printf("%s\n", msg.getReason());
       throw new RuntimeException("V2ICoordinator: Unknown reason for " +

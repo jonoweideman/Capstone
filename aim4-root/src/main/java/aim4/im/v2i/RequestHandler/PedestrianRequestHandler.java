@@ -183,7 +183,7 @@ public class PedestrianRequestHandler implements RequestHandler{
         tracking.add((Integer)vin);
     
     // If the vehicle has got a reservation already, reject it.
-    if (basePolicy.hasReservation(vin)) {
+    if (basePolicy.hasReservation(vin)&&!tracking.contains((Integer)vin)) {
       basePolicy.sendRejectMsg(vin,
                                msg.getRequestId(),
                                Reject.Reason.CONFIRMED_ANOTHER_REQUEST);
@@ -385,7 +385,7 @@ public class PedestrianRequestHandler implements RequestHandler{
   private void sendRejects(){
       for(Integer v : tracking){
           try{
-          basePolicy.sendRejectMsg(v,0, Reject.Reason.NO_CLEAR_PATH);
+          basePolicy.sendRejectMsg(v,-v, Reject.Reason.TRY_TO_SLOW_DOWN);
           }catch(Exception e){
               //Vehicle couln't slow down
           }
